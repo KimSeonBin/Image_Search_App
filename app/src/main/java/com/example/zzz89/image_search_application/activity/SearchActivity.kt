@@ -1,13 +1,11 @@
 package com.example.zzz89.image_search_application.activity
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.example.zzz89.image_search_application.R
 import com.example.zzz89.image_search_application.adapter.SearchAdapter
 import com.example.zzz89.image_search_application.flickr.FlickrSearch
@@ -18,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BasesActivity() {
     private var searchAdapter: SearchAdapter = SearchAdapter()
     private var isTop: Boolean = false
     private var isLoad: Boolean = false
@@ -54,8 +52,6 @@ class SearchActivity : AppCompatActivity() {
             when(it.id) {
                 R.id.search_button -> startSearch()
             }
-            if(!isTop)
-                edittextAnimation()
         })
     }
 
@@ -76,8 +72,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun search(page: Int){
+        if(!checkInternet()) {
+            Toast.makeText(this, "인터넷 연결을 확인해 주세요", Toast.LENGTH_LONG).show()
+            return
+        }
+        if(!isTop)
+            edittextAnimation()
+
         keyword = search_edittext.text.toString();
-        Log.d("pagecount", page.toString())
 
         val flicker: FlickrSearch = FlickrSearch()
         val finter = flicker.getInterface()
@@ -97,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<SearchResult>, response: Response<SearchResult>) {
-                if(response.isSuccessful){
+                if(response.isSuccessful && response.code() == 200){
                     addItemtoAdapter(response.body()!!)
                 }
             }

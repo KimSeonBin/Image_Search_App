@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.example.zzz89.image_search_application.R
 import kotlinx.android.synthetic.main.activity_detail.*
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : BasesActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,5 +23,6 @@ class DetailActivity : AppCompatActivity() {
 
     private fun setPicture(url: String) {
         Glide.with(this).load(url).into(detail_image)
+
     }
 }
