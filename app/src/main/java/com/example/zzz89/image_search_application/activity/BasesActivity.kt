@@ -11,26 +11,23 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 
 open class BasesActivity: AppCompatActivity(){
-    protected val readP = Manifest.permission.READ_EXTERNAL_STORAGE
     protected val writeP = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
     fun checkInternet(): Boolean {
         val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetworkInfo
 
-        if(activeNetwork == null)
+        if(null == activeNetwork) {
+            Toast.makeText(this, "인터넷 연결을 확인해 주세요", Toast.LENGTH_LONG).show()
             return false
-
+        }
         return true
     }
 
     fun checkStorePermission(): Boolean {
-        val readPcheck = ContextCompat.checkSelfPermission(this, readP)
         val writePcheck = ContextCompat.checkSelfPermission(this, writeP)
         val permissonList = ArrayList<String>()
 
-        if(readPcheck != PackageManager.PERMISSION_GRANTED)
-            permissonList.add(readP)
         if(writePcheck != PackageManager.PERMISSION_GRANTED)
             permissonList.add(writeP)
 

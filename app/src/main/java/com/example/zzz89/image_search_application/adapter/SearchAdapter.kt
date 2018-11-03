@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.zzz89.image_search_application.R
 import com.example.zzz89.image_search_application.activity.DetailActivity
 import com.example.zzz89.image_search_application.flickr.FlickSearchItem
-import kotlinx.android.synthetic.main.item_search.*
+import jp.wasabeef.glide.transformations.CropSquareTransformation
 
 class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
     private val pictureArr: MutableList<FlickSearchItem> = ArrayList<FlickSearchItem>()
@@ -23,15 +23,17 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        var item = pictureArr[position]
+        val item = pictureArr[position]
         val url = "https://farm${item.farm}.staticflickr.com/${item.server}/${item.id}" +
                 "_${item.secret}_m.jpg"
 
-        Glide.with(holder.itemView.context).load(url).into(holder.image)
+        Glide.with(holder.itemView.context)
+            .load(url)
+            .apply(RequestOptions().fitCenter()
+                .transform(CropSquareTransformation()))
+            .into(holder.image)
         holder.image.setOnClickListener(View.OnClickListener {
-            var intent: Intent = Intent(holder.itemView.context, DetailActivity::class.java)
-            intent.putExtra("current", url)
-            holder.itemView.context.startActivity(intent)
+            startDetailActivity(holder, item, url)
         })
     }
 
@@ -45,6 +47,13 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     fun clearItems(){
         pictureArr.clear()
+    }
+
+    fun startDetailActivity(holder: SearchViewHolder, item: FlickSearchItem, url: String){
+        var intent: Intent = Intent(holder.itemView.context, DetailActivity::class.java)
+        intent.putExtra("current", url)
+        intent.putExtra("title", item.id + item.farm)
+        holder.itemView.context.startActivity(intent)
     }
 
     inner class SearchViewHolder(view: View): RecyclerView.ViewHolder(view){

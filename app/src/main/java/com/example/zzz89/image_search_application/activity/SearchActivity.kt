@@ -2,6 +2,7 @@ package com.example.zzz89.image_search_application.activity
 
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.RelativeLayout
@@ -67,15 +68,16 @@ class SearchActivity : BasesActivity() {
 
     fun startSearch(){
         searchAdapter.clearItems()
+        searchAdapter.notifyDataSetChanged()
+
         pageutil = PicturePage()
         search(pageutil.page)
     }
 
     fun search(page: Int){
-        if(!checkInternet()) {
-            Toast.makeText(this, "인터넷 연결을 확인해 주세요", Toast.LENGTH_LONG).show()
+        if(!checkInternet())
             return
-        }
+
         if(!isTop)
             edittextAnimation()
 
@@ -115,6 +117,5 @@ class SearchActivity : BasesActivity() {
         val addSize = body.photos.photo!!.size
         val beforesize = searchAdapter.itemCount - addSize
         searchAdapter.notifyItemRangeChanged(beforesize, addSize)
-
     }
 }
