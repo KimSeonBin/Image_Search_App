@@ -5,7 +5,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class FlickrSearch{
     val baseurl = "https://api.flickr.com/"
-    val api_key = ""
     val method = "flickr.photos.search"
     val format = "json"
     val nojsoncallback = 1

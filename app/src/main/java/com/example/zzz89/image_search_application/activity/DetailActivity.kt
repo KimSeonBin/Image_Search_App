@@ -34,19 +34,9 @@ class DetailActivity : BasesActivity() {
     }
 
     private fun setclickListener() {
-        detail_image.setOnClickListener(View.OnClickListener {
-            changeVisible()
-        })
         detail_store.setOnClickListener(View.OnClickListener {
             processSaveImage()
         })
-    }
-
-    private fun changeVisible(){
-        if(detail_store.visibility == Button.INVISIBLE)
-            detail_store.visibility = Button.VISIBLE
-        else
-            detail_store.visibility = Button.INVISIBLE
     }
 
     private fun processSaveImage(){

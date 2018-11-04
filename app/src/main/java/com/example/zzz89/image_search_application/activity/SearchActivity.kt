@@ -1,6 +1,7 @@
 package com.example.zzz89.image_search_application.activity
 
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
@@ -37,13 +38,17 @@ class SearchActivity : BasesActivity() {
     fun initComponent(){
         search_recyclerview.adapter = searchAdapter
         search_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy > 0){
+                    var visibleItemCount = (recyclerView.layoutManager as GridLayoutManager).childCount
+                    var totalItemCount = (recyclerView.layoutManager as GridLayoutManager).itemCount
+                    var pastVisibleItems = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
 
-                if(!isLoad){
-                    if(!recyclerView.canScrollVertically(1)){
-                        isLoad = true
-                        search(pageutil.page++)
+                    if(!isLoad){
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            isLoad = true
+                            search(pageutil.page++)
+                        }
                     }
                 }
             }
@@ -58,7 +63,7 @@ class SearchActivity : BasesActivity() {
 
     fun edittextAnimation(){
         isTop = true
-        search_Textlayout.animate().y(0f).setDuration(400).setInterpolator(AccelerateInterpolator())
+        search_Textlayout.animate().y(0f).setDuration(300).setInterpolator(AccelerateInterpolator())
 
         val param = search_Textlayout.layoutParams as RelativeLayout.LayoutParams
         param.removeRule(RelativeLayout.CENTER_IN_PARENT)
@@ -70,7 +75,6 @@ class SearchActivity : BasesActivity() {
         searchAdapter.clearItems()
         searchAdapter.notifyDataSetChanged()
 
-        pageutil = PicturePage()
         search(pageutil.page)
     }
 
@@ -88,12 +92,13 @@ class SearchActivity : BasesActivity() {
 
         val finter_ready = finter.getSearchResut(
             flicker.method,
-            flicker.api_key,
+            getString(R.string.key),
             keyword,
             page,
             pageutil.pagecount,
             flicker.format,
-            flicker.nojsoncallback)
+            flicker.nojsoncallback,
+            pageutil.accuracy)
 
         finter_ready.enqueue(object: Callback<SearchResult> {
             override fun onFailure(call: Call<SearchResult>, t: Throwable) {
@@ -106,8 +111,6 @@ class SearchActivity : BasesActivity() {
                 }
             }
         })
-
-        isLoad = false
     }
 
     fun addItemtoAdapter(body: SearchResult) {
@@ -117,5 +120,7 @@ class SearchActivity : BasesActivity() {
         val addSize = body.photos.photo!!.size
         val beforesize = searchAdapter.itemCount - addSize
         searchAdapter.notifyItemRangeChanged(beforesize, addSize)
+
+        isLoad = false
     }
 }

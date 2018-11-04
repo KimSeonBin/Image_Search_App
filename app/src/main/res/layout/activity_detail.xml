@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/detail_store"
             android:text="@string/store"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/detail_image"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -13,5 +13,7 @@ interface FlickrInterface{
                        @Query("page")       page: Int,
                        @Query("per_page")  per_page: Int,
                        @Query("format")     format: String,
-                       @Query("nojsoncallback") no: Int): Call<SearchResult>
+                       @Query("nojsoncallback") no: Int,
+                       @Query("accuracy") accuracy: Int): Call<SearchResult>
+
 }
